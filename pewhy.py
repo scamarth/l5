@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 
-vid = cv2.VideoCapture("videa.mp4")
+vid = cv2.VideoCapture("video.mp4")
 count = 0
 background = 0
 for i in range(60):
@@ -27,14 +27,17 @@ while(vid.isOpened()):
     upper_red2 = np.array([180,255,255])
     mask2 = cv2.inRange(hsv,lower_red2,upper_red2) 
     mask = mask1 + mask2
+    #mask = cv2.morphologyEx(
+     #   mask,
+      #  cv2.MORPH_OPEN,np.ones((3,3),np.uint8,iterations = 2)
+    #)
+    kernel=np.ones((3,3),np.uint8)
     mask = cv2.morphologyEx(
-        mask,
-        cv2.MORPH_OPEN,
-        np.ones((3,3),np.uint8,
-                iterations = 2)
-    )
-    mask = cv2.dilate(mask, np.ones((3,3)),np.uint8,
-                    iterations = 1)
+            mask,
+            cv2.MORPH_OPEN,kernel,iterations = 2)
+
+        
+    mask = cv2.dilate(mask, np.ones((3,3),np.uint8),iterations = 1)
     mask2 = cv2.bitwise_not(mask1)
     res1 = cv2.bitwise_and(background,background,mask=mask)
     res2 = cv2.bitwise_and(img,img,mask = mask2)
